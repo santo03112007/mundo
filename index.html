@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
-        <style>
+<head>
+    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+    <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -42,7 +42,7 @@
         }
         .highlight {
             font-weight: bold;
-            color: black; /* Cambiado a negro */
+            color: black;
         }
     </style>
 </head>
@@ -57,13 +57,14 @@
     <script>
         const searchInput = document.getElementById("searchInput");
         const suggestionsBox = document.getElementById("suggestions");
+        let options = []; // Se llenará con los datos desde JotForm
 
-        // Lista de opciones para buscar
-        const options = [
-            "Manzana", "Banana", "Cereza", "Dátil", "Uva", "Limón", "Mango", "Naranja",
-            "Piña", "Fresa", "Pera", "Melón", "Sandía", "Ciruela", "Papaya",
-            "Automóvil", "Avión", "Barco", "Tren", "Helicóptero", "Bicicleta", "Motocicleta"
-        ];
+        // 🚀 Obtener opciones configuradas en el widget
+        JFCustomWidget.subscribe("ready", function(data) {
+            if (data && data.options) {
+                options = data.options.split(",").map(item => item.trim());
+            }
+        });
 
         searchInput.addEventListener("input", function() {
             let query = searchInput.value.toLowerCase().trim();
@@ -74,7 +75,6 @@
                 return;
             }
 
-            // Filtrar opciones que contengan la consulta
             let filteredOptions = options.filter(item => item.toLowerCase().includes(query));
 
             if (filteredOptions.length > 0) {
@@ -94,18 +94,17 @@
             }
         });
 
-        // Función para resaltar coincidencias en negrita y negro
         function highlightMatch(text, query) {
             let regex = new RegExp(`(${query})`, "gi");
             return text.replace(regex, "<span class='highlight'>$1</span>");
         }
 
-        // Cerrar el cuadro de sugerencias si se hace clic fuera
         document.addEventListener("click", function(event) {
             if (!searchInput.contains(event.target)) {
                 suggestionsBox.style.display = "none";
             }
         });
+
     </script>
 
 </body>
